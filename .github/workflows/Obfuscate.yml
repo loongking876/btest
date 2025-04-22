@@ -1,12 +1,12 @@
-name: Build and Obfuscate BPB Panel
+name: Build and Obfuscate Panel
 
 on:
   push:
     branches:
       - main
   schedule:
-    # 每天凌晨1:00运行
-    - cron: "0 1 * * *"
+    # 每天凌晨2:00运行
+    - cron: "0 2 * * *"
 
 permissions:
   contents: write
@@ -28,11 +28,11 @@ jobs:
         run: |
           npm install -g javascript-obfuscator
 
-      - name: 下载 BPB worker.js
+      - name: 下载  worker.js
         run: |
           wget -O origin.js https://raw.githubusercontent.com/loongking876/js/refs/heads/main/unobfuscated-worker.js
 
-      - name: 混淆 BPB worker.js
+      - name: 混淆  worker.js
         run: |
           javascript-obfuscator origin.js --output _worker.js \
             --compact true \
@@ -50,6 +50,6 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           branch: main
-          commit_message: ':arrow_up: 更新最新的 BPB 面板'
+          commit_message: ':arrow_up: 更新最新的 面板'
           commit_author: 'github-actions[bot] <github-actions[bot]@users.noreply.github.com>'
           push_options: '--set-upstream'
