@@ -30,7 +30,7 @@ jobs:
 
       - name: 下载 BPB worker.js
         run: |
-          wget -O origin.js https://raw.githubusercontent.com/loongking876/loong/refs/heads/main/unobfuscated-worker.js?token=GHSAT0AAAAAADB6KSME3FSMGJNWJVMH4L7Y2AHIEJA
+          wget -O origin.js https://raw.githubusercontent.com/loongking876/js/refs/heads/main/unobfuscated-worker.js
 
       - name: 混淆 BPB worker.js
         run: |
