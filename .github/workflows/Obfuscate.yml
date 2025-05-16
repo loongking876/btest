@@ -19,20 +19,36 @@ jobs:
       - name: 检出代码
         uses: actions/checkout@v4
 
+      - name: 检查是否是每3天运行一次
+        id: check-run
+        run: |
+          days_since_epoch=$(( $(date +%s) / 86400 ))
+          if (( days_since_epoch % 3 != 0 )); then
+            echo "今天不是执行日，跳过构建。"
+            echo "run_build=false" >> $GITHUB_OUTPUT
+          else
+            echo "今天是执行日，继续构建。"
+            echo "run_build=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: 设置 Node.js 环境
+        if: steps.check-run.outputs.run_build == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: "latest"
 
       - name: 安装依赖项
+        if: steps.check-run.outputs.run_build == 'true'
         run: |
           npm install -g javascript-obfuscator
 
-      - name: 下载  worker.js
+      - name: 下载 worker.js
+        if: steps.check-run.outputs.run_build == 'true'
         run: |
           wget -O origin.js https://raw.githubusercontent.com/loongking876/js/refs/heads/main/unobfuscated-worker.js
 
-      - name: 混淆  worker.js
+      - name: 混淆 worker.js
+        if: steps.check-run.outputs.run_build == 'true'
         run: |
           javascript-obfuscator origin.js --output _worker.js \
             --compact true \
@@ -47,6 +63,7 @@ jobs:
             --unicode-escape-sequence true
 
       - name: 提交更改
+        if: steps.check-run.outputs.run_build == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           branch: main
